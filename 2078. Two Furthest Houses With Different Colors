@@ -1,0 +1,29 @@
+class Solution {
+    public int maxDistance(int[] colors) {
+        int n = colors.length;
+        int i = 0;
+        int j = n - 1;
+        while (colors[i] == colors[n - 1]) {
+            i++;
+        }
+        while (colors[j] == colors[0]) {
+            j--;
+        }       
+        return Math.max(n - 1 - i, j);
+    }
+}
+
+
+-----------------------------------------
+Do alag colors wale houses ke beech ka maximum distance nikalna (jo hamesha pehle ya aakhri element se hi possible hai).
+int n = colors.length; — Array ki length li.
+
+int i = 0; int j = n - 1; — Two pointers set kiye (start aur end).
+
+while (colors[i] == colors[n - 1]) i++; — Left se aage badho jab tak aakhri element se different color na mil jaye.
+while (colors[j] == colors[0]) j--; — Right se peeche aao jab tak pehle element se different color na mil jaye.
+
+return Math.max(n - 1 - i, j); — Dono cases mein se jo bada distance ho, wahi answer hai.
+
+Complexity: Time $O(N)$ | Space $O(1)$
+_________________________________________
