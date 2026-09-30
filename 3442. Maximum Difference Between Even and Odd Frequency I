@@ -1,0 +1,20 @@
+class Solution {
+    public int maxDifference(String s) {
+        int[] count = new int[26];
+        for (char c : s.toCharArray()) {
+            count[c - 'a']++;
+        }
+        int maxOdd = -1;
+        int minEven = s.length() + 1;
+        for (int f : count) {
+            if (f > 0) {
+                if (f % 2 == 1) {
+                    maxOdd = Math.max(maxOdd, f);
+                } else {
+                    minEven = Math.min(minEven, f);
+                }
+            }
+        }
+        return maxOdd - minEven;
+    }
+}
