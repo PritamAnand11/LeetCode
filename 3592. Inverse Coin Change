@@ -1,0 +1,38 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class Solution {
+    public List<Integer> findCoins(int[] numWays) {
+        int n = numWays.length;
+        long[] dp = new long[n + 1];
+        List<Integer> coinList = new ArrayList<>();
+        
+        dp[0] = 1;
+        
+        for (int i = 1; i <= n; i++) {
+            long target = numWays[i - 1];
+            
+            if (dp[i] > target) {
+                return new ArrayList<>();
+            }
+            
+            if (dp[i] < target) {
+                long diff = target - dp[i];
+                if (diff != 1) {
+                    return new ArrayList<>();
+                }
+                
+                coinList.add(i);
+                for (int j = i; j <= n; j++) {
+                    dp[j] += dp[j - i];
+                }
+            }
+            
+            if (dp[i] != target) {
+                return new ArrayList<>();
+            }
+        }
+        
+        return coinList;
+    }
+}
