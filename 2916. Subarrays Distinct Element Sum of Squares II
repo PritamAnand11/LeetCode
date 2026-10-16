@@ -1,0 +1,75 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int sumCounts(int[] nums) {
+        int n = nums.length;
+        SegmentTree tree = new SegmentTree(n);
+        Map<Integer, Integer> lastSeen = new HashMap<>();
+        long totalSum = 0;
+
+        for (int i = 0; i < n; i++) {
+            int l = lastSeen.getOrDefault(nums[i], -1) + 1;
+            int r = i;
+            tree.update(l, r, 1);
+            lastSeen.put(nums[i], i);
+            totalSum = (totalSum + tree.getSquaredSum()) % MOD;
+        }
+
+        return (int) totalSum;
+    }
+    private static class SegmentTree {
+        private final int n;
+        private final long[] sum;
+        private final long[] sqSum;
+        private final int[] lazy;
+
+        public SegmentTree(int n) {
+            this.n = n;
+            int size = 4 * n;
+            sum = new long[size];
+            sqSum = new long[size];
+            lazy = new int[size];
+        }
+        public void update(int ql, int qr, int val) {
+            update(1, 0, n - 1, ql, qr, val);
+        }
+        private void update(int node, int start, int end, int ql, int qr, int val) {
+            if (ql > end || qr < start) {
+                return;
+            }
+            if (ql <= start && end <= qr) {
+                apply(node, start, end, val);
+                return;
+            }
+            push(node, start, end);
+            int mid = (start + end) / 2;
+            update(2 * node, start, mid, ql, qr, val);
+            update(2 * node + 1, mid + 1, end, ql, qr, val);
+            pull(node);
+        }
+        private void apply(int node, int start, int end, int val) {
+            long len = end - start + 1;
+            sqSum[node] = (sqSum[node] + 2 * sum[node] * val + val * val * len) % MOD;
+            sum[node] = (sum[node] + val * len) % MOD;
+            lazy[node] += val;
+        }
+        private void push(int node, int start, int end) {
+            if (lazy[node] != 0) {
+                int mid = (start + end) / 2;
+                apply(2 * node, start, mid, lazy[node]);
+                apply(2 * node + 1, mid + 1, end, lazy[node]);
+                lazy[node] = 0;
+            }
+        }
+        private void pull(int node) {
+            sum[node] = (sum[2 * node] + sum[2 * node + 1]) % MOD;
+            sqSum[node] = (sqSum[2 * node] + sqSum[2 * node + 1]) % MOD;
+        }
+        public long getSquaredSum() {
+            return sqSum[1];
+        }
+    }
+}
