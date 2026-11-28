@@ -1,0 +1,25 @@
+import java.util.HashSet;
+import java.util.Set;
+
+class Solution {
+    public int maxSum(int[] nums) {
+        int maxVal = Integer.MIN_VALUE;
+        for (int num : nums) {
+            if (num > maxVal) {
+                maxVal = num;
+            }
+        }
+        if (maxVal <= 0) {
+            return maxVal;
+        }
+
+        Set<Integer> uniquePositives = new HashSet<>();
+        int sum = 0;
+        for (int num : nums) {
+            if (num > 0 && uniquePositives.add(num)) {
+                sum += num;
+            }
+        }
+        return sum;
+    }
+}
